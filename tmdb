@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+import requests
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog = 'trfs',
+        description='Gerenciador simples de dicio'
+    )
+    subparsers = parser.add_subparsers(dest='comando')
+    subparsers.add_parser('type').add_argument('category', type=str, choices=['popular', 'upcoming', 'top_rated', 'now_playing'])
+    args = parser.parse_args()
+
+    endpoint = args.category
+    
+    API_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MjY5ODJiMTkwYzNmOTQ4NjZhZDg4ZGIxZmY2NDdhYSIsIm5iZiI6MTc2NjU4NjIwNy4wNDMsInN1YiI6IjY5NGJmNzVmZDU5NzliZGU0MWIxYmFlMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Jr34BW30n_wFoQgtMTL05XhDlTwgI91KNR2noug7THs'
+    URL = f'https://api.themoviedb.org/3/movie/{endpoint}'
+    HEADER = {
+        "accept": "application/json",
+        "Authorization": f'Bearer {API_KEY}'
+    }
+    resposta = requests.get(URL, headers=HEADER)
+    dici = dict(resposta.json()) # página 1 completas
+    dados = dici['results']
+
+    
+    if endpoint == 'popular':
+        print('FILMES POPULARES')
+        for filmes in dados:
+            print('-'*(len(dict(filmes)['title'])+8))
+            print(f'Título: {dict(filmes)['title']}')
+            print(f'Lançamento: {dict(filmes)['release_date']}')
+            print(f'Descrição: {dict(filmes)['overview']}')
+
+    elif endpoint == 'now_playing':
+        print(f'Lançamentos entre: {dici['dates']['minimum']} e {dici['dates']['maximum']}\n\n')
+        for filmes in dados:
+            print('-'*(len(dict(filmes)['title'])+8))
+            print(f'Título: {dict(filmes)['title']}')
+            print(f'Lançamento: {dict(filmes)['release_date']}')
+            print(f'Descrição: {dict(filmes)['overview']}')
+
+    elif endpoint == 'top_rated':
+        print('FILMES MAIS ACLAMADOS')
+        for filmes in dados:
+            print('-'*(len(dict(filmes)['title'])+8))
+            print(f'Título: {dict(filmes)['title']}')
+            print(f'Lançamento: {dict(filmes)['release_date']}')
+            print(f'Descrição: {dict(filmes)['overview']}')
+
+    elif endpoint == 'upcoming':
+        print('FILMES ESPERADOS')
+        for filmes in dados:
+            print('-'*(len(dict(filmes)['title'])+8))
+            print(f'Título: {dict(filmes)['title']}')
+            print(f'Lançamento: {dict(filmes)['release_date']}')
+            print(f'Descrição: {dict(filmes)['overview']}')
+    
+    else:
+        print('Opçao inválida')
+
+
+
+
+
+if __name__ == '__main__':
+    main()
